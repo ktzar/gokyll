@@ -18,6 +18,12 @@ func getHtmlFilesInDir(dirname string) []string{
     return htmls
 }
 
+func processHtml(file string) {
+    fmt.Printf("Processing %s\n", file)
+	data, _:= ioutil.ReadFile(file)
+	ioutil.WriteFile("_site/" + file, data, 0644)
+}
+
 func help() {
     fmt.Println(`usage: gokyll directory`)
 }
@@ -31,9 +37,8 @@ func main() {
 
     htmlFiles := getHtmlFilesInDir(siteDir)
     os.Mkdir(siteDir + "/_site", 0776)
-    fmt.Println("These are the html files found:")
-    for _, v := range htmlFiles {
-        fmt.Println(v)
+    for _, html := range htmlFiles {
+		processHtml(html)
     }
 }
 
