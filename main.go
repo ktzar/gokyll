@@ -1,44 +1,20 @@
 package main
 
-import "path/filepath"
-import "os"
-import "io/ioutil"
-import "fmt"
-
-func getHtmlFilesInDir(dirname string) []string{
-    files, _ := ioutil.ReadDir(dirname)
-    htmls := make([]string, 0)
-    for _, f := range files {
-        if !f.IsDir() {
-            if filepath.Ext(f.Name()) == ".html" {
-                htmls = append(htmls, f.Name())
-            }
-        }
-    }
-    return htmls
-}
-
-func processHtml(file string) {
-    fmt.Printf("Processing %s\n", file)
-	data, _:= ioutil.ReadFile(file)
-	ioutil.WriteFile("_site/" + file, data, 0644)
-}
-
-func help() {
-    fmt.Println(`usage: gokyll directory`)
-}
+import (
+	"os"
+	"files"
+)
 
 func main() {
     if len(os.Args) < 2 {
-        help()
+        files.Help()
         return;
     }
     siteDir := os.Args[1]
-
-    htmlFiles := getHtmlFilesInDir(siteDir)
-    os.Mkdir(siteDir + "/_site", 0776)
+	files.MakeSiteDir(siteDir)
+    htmlFiles := files.GetHtmlFilesInDir(siteDir)
     for _, html := range htmlFiles {
-		processHtml(html)
+		files.ProcessFile(siteDir, html)
     }
 }
 

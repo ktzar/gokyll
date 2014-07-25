@@ -1,16 +1,25 @@
 package template
 
-//import "html/template"
+import "html/template"
+import "io"
 import "fmt"
-import "io/ioutil"
 
-func RenderHtml (template string) []byte {
-	return []byte(template)
+type Out struct {
+	html []byte
+	io.Writer
 }
 
-func ProcessHtml(file string) {
-    fmt.Printf("Processing %s\n", file)
-       data, _:= ioutil.ReadFile(file)
-       ioutil.WriteFile("_site/" + file, data, 0644)
+func (o *Out) Write(p []byte) (n int, err error) {
+	fmt.Println(p)
+	o.html = p
+	return len(p), nil
+}
+
+
+func RenderHtml (tpl []byte) []byte {
+	var out = new(Out)
+	t, _ :=  template.New("page_renderer").Parse(string(tpl))
+	_ = t.ExecuteTemplate(out, "T", "<script>alert('you have been pwned')</script>")
+	return out.html
 }
 
