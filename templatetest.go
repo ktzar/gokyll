@@ -9,7 +9,7 @@ type StdoutWriter struct {
 	io.Writer
 }
 
-func (o *StdoutWriter) Write(p []byte) (n int, err error) {
+func (self StdoutWriter) Write(p []byte) (n int, err error) {
 	fmt.Print((string(p)))
 	return len(p), nil
 }
@@ -21,9 +21,8 @@ type Page struct {
 	Date string
 }
 
-func (p *Page) SayHi() (out string) {
-	fmt.Println( "----"+p.Author + "----")
-	return "Hello I'm "+p.Author
+func (self Page) SayHi() (out string) {
+	return "Hello I am "+self.Author
 }
 
 func main() {
