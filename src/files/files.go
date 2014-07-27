@@ -3,10 +3,15 @@ package files
 import "fmt"
 import "os"
 import "io/ioutil"
+import "encoding/json"
 import "os/exec"
 import "path/filepath"
 import "strings"
 import "template"
+
+type Config struct {
+	Title string
+}
 
 func GetSiteDirs(dirname string) []string{
     files, _ := ioutil.ReadDir(dirname)
@@ -38,13 +43,17 @@ func Help() {
 }
 
 func MakeSiteDir(siteDir string) {
-    os.Mkdir(siteDir + "/_site", 0776)
+    os.Mkdir(siteDir + string(filepath.Separator) + "_site", 0776)
 }
 
 func ProcessFile(siteDir string, file string) {
+
+	fmt.Println("Config")
+	config := readConfig(siteDir)
+
 	fmt.Println("Processing "+file)
 	data, _:= ioutil.ReadFile(siteDir + "/" + file)
-	data = template.RenderHtml(siteDir + "/" + file)
+	data = template.RenderHtml(siteDir + "/" + file, config)
 	fmt.Println("Got "+string(data))
 	path := siteDir + "/_site/" + file
 	fmt.Println("Writing in "+ path)
@@ -57,3 +66,17 @@ func CopyDirectoryToSite(dir string, siteDir string) {
 	cmd := exec.Command("cp", "-rf", origin, target)
 	cmd.Run()
 }
+
+func readConfig (siteDir string) (store Config) {
+	data, err := ioutil.ReadFile(siteDir + "/config.json")
+	if err != nil {
+		fmt.Println("Cannot read config.json", err)
+	}
+	fmt.Println(string(data))
+	err = json.Unmarshal(data, &store)
+	if err != nil {
+		fmt.Println("Cannot parse config.json", err)
+	}
+	return store
+}
+
