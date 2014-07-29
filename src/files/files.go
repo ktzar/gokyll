@@ -9,47 +9,54 @@ import "path/filepath"
 import "strings"
 import "template"
 
+
+type Page struct {
+	Title string
+	File string
+}
+
 type Config struct {
 	Title string
+	Pages []Page
 }
 
 func GetSiteDirs(dirname string) []string{
-    files, _ := ioutil.ReadDir(dirname)
-    dirs := make([]string, 0)
-    for _, f := range files {
-        if f.IsDir() && !strings.HasPrefix(f.Name(), "_") {
+	files, _ := ioutil.ReadDir(dirname)
+	dirs := make([]string, 0)
+	for _, f := range files {
+		if f.IsDir() && !strings.HasPrefix(f.Name(), "_") {
 			dirs = append(dirs, f.Name())
-        }
-    }
-    return dirs
+		}
+	}
+	return dirs
 }
 
 
 func GetHtmlFilesInDir(dirname string) []string{
-    files, _ := ioutil.ReadDir(dirname)
-    htmls := make([]string, 0)
-    for _, f := range files {
-        if !f.IsDir() {
-            if filepath.Ext(f.Name()) == ".html" {
-                htmls = append(htmls, f.Name())
-            }
-        }
-    }
-    return htmls
+	files, _ := ioutil.ReadDir(dirname)
+	htmls := make([]string, 0)
+	for _, f := range files {
+		if !f.IsDir() {
+			if filepath.Ext(f.Name()) == ".html" {
+				htmls = append(htmls, f.Name())
+			}
+		}
+	}
+	return htmls
 }
 
 func Help() {
-    fmt.Println(`usage: gokyll directory`)
+	fmt.Println(`usage: gokyll directory`)
 }
 
 func MakeSiteDir(siteDir string) {
-    os.Mkdir(siteDir + string(filepath.Separator) + "_site", 0776)
+	os.Mkdir(siteDir + string(filepath.Separator) + "_site", 0776)
 }
 
 func ProcessFile(siteDir string, file string) {
 
-	fmt.Println("Config")
 	config := readConfig(siteDir)
+	fmt.Println("Config", config)
 
 	fmt.Println("Processing "+file)
 	data, _:= ioutil.ReadFile(siteDir + "/" + file)
