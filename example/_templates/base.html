@@ -1,0 +1,15 @@
+{{define "base"}}<html>
+    <head>{{.Title}}</head>
+    <body>
+        <header>
+            <ul>
+                {{range .Pages}}
+                <li><a href="{{.File}}.html">{{.Title}}</a></li>
+                {{end}}
+            </ul>
+        </header>
+        <div class="content">
+        {{template "content" .}}
+        </div>
+    </body>
+</html>{{end}}

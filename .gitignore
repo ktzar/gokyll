@@ -6,7 +6,7 @@
 # Folders
 _obj
 _test
-example
+example/_site
 
 # Architecture specific extensions/prefixes
 *.[568vq]

@@ -1,0 +1,9 @@
+{
+    "title": "Music School",
+    "pages": [
+        {"title": "Home", "file": "index"},
+        {"title": "About", "file": "about"},
+        {"title": "Courses", "file": "courses"}
+    ]
+}
+

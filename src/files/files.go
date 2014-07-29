@@ -9,7 +9,6 @@ import "path/filepath"
 import "strings"
 import "template"
 
-
 type Page struct {
 	Title string
 	File string
