@@ -7,7 +7,7 @@ import "encoding/json"
 import "os/exec"
 import "path/filepath"
 import "strings"
-import "template"
+import "gokyll/template"
 
 type Page struct {
 	Title string

@@ -1,7 +1,7 @@
 package main
 
 import "os"
-import "files"
+import "gokyll/files"
 import "fmt"
 
 func main() {
