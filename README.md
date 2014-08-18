@@ -7,7 +7,7 @@ Golang static page generator.
 This project is still in an early development stage. It's not even usable yet.
 
 ##Getting started
-Run gokyll indicating the directory where your project is stored. Gokyll will process it and, if everything is correct, will output the static site in the `_site` subdirectory.
+Run `gokyll` indicating the directory where your project is stored. Gokyll will process it and, if everything is correct, will output the static site in the `_site` subdirectory.
 
 ##Configuration
 The `config.json` file contains the configuration for your website. There are some keys that must be present in it, whereas others are optional.

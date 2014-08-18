@@ -44,23 +44,18 @@ func GetHtmlFilesInDir(dirname string) []string{
 	return htmls
 }
 
-func Help() {
-	fmt.Println(`usage: gokyll directory`)
-}
-
 func MakeSiteDir(siteDir string) {
 	os.Mkdir(siteDir + string(filepath.Separator) + "_site", 0776)
 }
 
 func ProcessFile(siteDir string, file string) {
+	fmt.Println("Processing "+file)
 
 	config := readConfig(siteDir)
-	fmt.Println("Config", config)
+	siteData := readData(siteDir)
 
-	fmt.Println("Processing "+file)
 	data, _:= ioutil.ReadFile(siteDir + "/" + file)
-	data = template.RenderHtml(siteDir + "/" + file, config)
-	fmt.Println("Got "+string(data))
+	data = template.RenderHtml(siteDir, file, config, siteData)
 	path := siteDir + "/_site/" + file
 	fmt.Println("Writing in "+ path)
 	ioutil.WriteFile(path, data, 0644)
@@ -73,15 +68,36 @@ func CopyDirectoryToSite(dir string, siteDir string) {
 	cmd.Run()
 }
 
+func readData (siteDir string) (map[string]interface{}) {
+	fmt.Println("ReadDATA")
+	output := map[string] interface{} {}
+
+	files, _ := ioutil.ReadDir(siteDir + "/_data")
+	for _, f := range files {
+		if strings.HasSuffix(f.Name(), ".json") {
+			dataName := strings.Split(f.Name(), ".")[0]
+			binaryData, err := ioutil.ReadFile(siteDir + "/_data/"+f.Name())
+			if err != nil {
+				fmt.Println("Cannot read config.json", err)
+			}
+			var data interface{}
+			json.Unmarshal(binaryData, &data)
+			output[dataName] = data
+		}
+	}
+	return output
+}
+
 func readConfig (siteDir string) (store Config) {
 	data, err := ioutil.ReadFile(siteDir + "/config.json")
 	if err != nil {
 		fmt.Println("Cannot read config.json", err)
-	}
-	fmt.Println(string(data))
-	err = json.Unmarshal(data, &store)
-	if err != nil {
-		fmt.Println("Cannot parse config.json", err)
+	} else {
+		//fmt.Println(string(data))
+		err = json.Unmarshal(data, &store)
+		if err != nil {
+			fmt.Println("Cannot parse config.json", err)
+		}
 	}
 	return store
 }

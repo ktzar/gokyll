@@ -1,9 +1,9 @@
 {{define "base"}}<html>
-    <head>{{.Title}}</head>
+    <head>{{.Site.Title}}</head>
     <body>
         <header>
             <ul>
-                {{range .Pages}}
+                {{range .Site.Pages}}
                 <li><a href="{{.File}}.html">{{.Title}}</a></li>
                 {{end}}
             </ul>
