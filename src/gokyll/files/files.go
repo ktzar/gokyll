@@ -1,13 +1,15 @@
 package files
 
-import "fmt"
-import "os"
-import "io/ioutil"
-import "encoding/json"
-import "os/exec"
-import "path/filepath"
-import "strings"
-import "gokyll/template"
+import (
+	"fmt"
+	"os"
+	"io/ioutil"
+	"encoding/json"
+	"os/exec"
+	"path/filepath"
+	"strings"
+	"gokyll/template"
+)
 
 type Page struct {
 	Title string
@@ -57,7 +59,6 @@ func ProcessFile(siteDir string, file string) {
 	data, _:= ioutil.ReadFile(siteDir + "/" + file)
 	data = template.RenderHtml(siteDir, file, config, siteData)
 	path := siteDir + "/_site/" + file
-	fmt.Println("Writing in "+ path)
 	ioutil.WriteFile(path, data, 0644)
 }
 
@@ -69,7 +70,6 @@ func CopyDirectoryToSite(dir string, siteDir string) {
 }
 
 func readData (siteDir string) (map[string]interface{}) {
-	fmt.Println("ReadDATA")
 	output := map[string] interface{} {}
 
 	files, _ := ioutil.ReadDir(siteDir + "/_data")
@@ -93,7 +93,6 @@ func readConfig (siteDir string) (store Config) {
 	if err != nil {
 		fmt.Println("Cannot read config.json", err)
 	} else {
-		//fmt.Println(string(data))
 		err = json.Unmarshal(data, &store)
 		if err != nil {
 			fmt.Println("Cannot parse config.json", err)

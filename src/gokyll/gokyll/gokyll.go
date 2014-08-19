@@ -2,10 +2,19 @@ package main
 
 import "os"
 import "gokyll/files"
+import "strings"
 import "fmt"
 
 func help() {
 	fmt.Println(`usage: gokyll directory`)
+}
+
+func copyStatic(siteDir string) {
+	dirs := files.GetSiteDirs(siteDir)
+	for _, dir := range dirs {
+		files.CopyDirectoryToSite(dir, siteDir)
+	}
+	fmt.Println("Copying static directories: ", strings.Join(dirs, ", "))
 }
 
 func main() {
@@ -15,11 +24,7 @@ func main() {
     }
     siteDir := os.Args[1]
 	files.MakeSiteDir(siteDir)
-    dirs := files.GetSiteDirs(siteDir)
-	for _, dir := range dirs {
-		fmt.Println("Copying: ", dir)
-		files.CopyDirectoryToSite(dir, siteDir)
-	}
+	copyStatic(siteDir)
     htmlFiles := files.GetHtmlFilesInDir(siteDir)
     for _, html := range htmlFiles {
 		files.ProcessFile(siteDir, html)

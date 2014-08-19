@@ -1,0 +1,22 @@
+[
+    {
+        "title": "Course number one",
+        "thumb": "img1.jpg",
+        "start_date": "12/12/2014"
+    },
+    {
+        "title": "Course number two",
+        "thumb": "img2.jpg",
+        "start_date": "13/12/2014"
+    },
+    {
+        "title": "Course number three",
+        "thumb": "img3.jpg",
+        "start_date": "16/12/2014"
+    },
+    {
+        "title": "Course number four",
+        "thumb": "img4.jpg",
+        "start_date": "18/12/2014"
+    }
+]
