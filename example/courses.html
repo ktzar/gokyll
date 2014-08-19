@@ -1,8 +1,10 @@
 {{define "content"}}
 <h3>Courses</h3>
 <p>This is the courses page</p>
-<ul>
-{{range .Data.courses}}
-<li>{{.title}}</li>{{end}}
+<ul>{{range .Data.Courses}}
+    <li>
+        <p>{{.title}} - starts in {{.start_date}}</p>
+        <img src="img/{{.thumb}}"/>
+    </li>{{end}}
 </ul>
 {{end}}

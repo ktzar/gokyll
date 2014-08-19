@@ -82,7 +82,7 @@ func readData (siteDir string) (map[string]interface{}) {
 			}
 			var data interface{}
 			json.Unmarshal(binaryData, &data)
-			output[dataName] = data
+			output[strings.Title(dataName)] = data
 		}
 	}
 	return output
