@@ -1,15 +1,16 @@
 {{define "base"}}<html>
-    <head>{{.Site.Title}}</head>
+    <head>{{.SiteTitle}} - {{.PageTitle}}</head>
     <body>
         <header>
-            <ul>
-                {{range .Site.Pages}}
-                <li><a href="{{.File}}.html">{{.Title}}</a></li>
-                {{end}}
+            <h1>{{.SiteTitle}}</h1>
+            <h2>{{.PageTitle}}</h2>
+            <ul>{{range .Site.Pages}}
+                <li><a href="{{.File}}.html">{{.Title}}</a></li>{{end}}
             </ul>
         </header>
         <div class="content">
         {{template "content" .}}
         </div>
+        <footer>&copy;{{.Year}}</footer>
     </body>
 </html>{{end}}

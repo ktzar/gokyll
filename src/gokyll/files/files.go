@@ -8,8 +8,35 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
-	"gokyll/template"
+	"bytes"
+	"html/template"
+	"time"
 )
+
+var OUTPUT_DIR = "generated"
+
+type TemplateData struct {
+	Site Config
+	Data map[string]interface{}
+	File string
+}
+
+func (data TemplateData) Year() (string) {
+	return fmt.Sprintf("%d", time.Now().Year())
+}
+
+func (data TemplateData) PageTitle() (string) {
+	for _, page := range data.Site.Pages {
+		if page.File == strings.Replace(data.File, ".html", "", 1) {
+			return page.Title
+		}
+	}
+	return ""
+}
+
+func (data TemplateData) SiteTitle() (string) {
+	return data.Site.Title
+}
 
 type Page struct {
 	Title string
@@ -21,6 +48,7 @@ type Config struct {
 	Pages []Page
 }
 
+// Return the static directories in the site
 func GetSiteDirs(dirname string) []string{
 	files, _ := ioutil.ReadDir(dirname)
 	dirs := make([]string, 0)
@@ -32,7 +60,7 @@ func GetSiteDirs(dirname string) []string{
 	return dirs
 }
 
-
+// Return the html files that are in the site directory
 func GetHtmlFilesInDir(dirname string) []string{
 	files, _ := ioutil.ReadDir(dirname)
 	htmls := make([]string, 0)
@@ -46,10 +74,12 @@ func GetHtmlFilesInDir(dirname string) []string{
 	return htmls
 }
 
+// Create the output directory of the site if it doesn't exist
 func MakeSiteDir(siteDir string) {
-	os.Mkdir(siteDir + string(filepath.Separator) + "_site", 0776)
+	os.Mkdir(OUTPUT_DIR, 0776)
 }
 
+// Generate output html for one of the files in the site
 func ProcessFile(siteDir string, file string) {
 	fmt.Println("Processing "+file)
 
@@ -57,16 +87,30 @@ func ProcessFile(siteDir string, file string) {
 	siteData := readData(siteDir)
 
 	data, _:= ioutil.ReadFile(siteDir + "/" + file)
-	data = template.RenderHtml(siteDir, file, config, siteData)
-	path := siteDir + "/_site/" + file
+	data = RenderHtml(siteDir, file, config, siteData)
+	path := OUTPUT_DIR + "/" + file
 	ioutil.WriteFile(path, data, 0644)
 }
 
+// Copy all the directories that are not prefixed with _ to the output directory
 func CopyDirectoryToSite(dir string, siteDir string) {
 	origin := siteDir + string(filepath.Separator) + dir
-	target := siteDir + string(filepath.Separator) + "_site"
+	target := OUTPUT_DIR
 	cmd := exec.Command("cp", "-rf", origin, target)
 	cmd.Run()
+}
+
+func RenderHtml (siteDir string, file string, config Config, data map[string]interface{}) []byte {
+	var out bytes.Buffer
+	path := siteDir + "/" + file
+	templateFile := siteDir + "/_templates/base.html"
+	templateData := TemplateData{config, data, file}
+	t :=  template.Must(template.New("page_renderer").ParseFiles(path, templateFile))
+	err := t.ExecuteTemplate(&out, "base", templateData)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return out.Bytes()
 }
 
 func readData (siteDir string) (map[string]interface{}) {
